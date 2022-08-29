@@ -46,13 +46,19 @@ public class CommentService {
     if (null == post) {
       return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
     }
+    Comment parent;
+    if (requestDto.getParentId() != null){
+      parent =  commentRepository.findById(requestDto.getParentId()).orElseThrow(
+              () -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+    } else{
+      parent = null;
+    }
 
-    Comment parent =  commentRepository.findById(requestDto.getParentId());
     Comment comment = Comment.builder()
         .member(member)
         .post(post)
         .content(requestDto.getContent())
-        .parent()
+        .parent(parent)
         .build();
     commentRepository.save(comment);
     return ResponseDto.success(
