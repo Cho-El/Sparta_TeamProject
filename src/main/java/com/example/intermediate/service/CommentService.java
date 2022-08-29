@@ -51,6 +51,7 @@ public class CommentService {
         .member(member)
         .post(post)
         .content(requestDto.getContent())
+        .parent()
         .build();
     commentRepository.save(comment);
     return ResponseDto.success(

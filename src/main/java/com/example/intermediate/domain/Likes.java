@@ -34,12 +34,12 @@ public class Likes {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
-    public Likes(Long userId, Post post) {
+    public Likes(Long userId, Post post) { // 게시물 좋아요
         this.userId = userId;
         this.post = post;
     }
 
-    public Likes(Long userId, Comment comment) {
+    public Likes(Long userId, Comment comment) { // 댓글 좋아요
         this.userId = userId;
         this.comment = comment;
     }

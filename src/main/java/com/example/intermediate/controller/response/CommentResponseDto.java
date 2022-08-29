@@ -1,6 +1,8 @@
 package com.example.intermediate.controller.response;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,4 +18,6 @@ public class CommentResponseDto {
   private String content;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
+  private int likeCount;
+  private List<CommentResponseDto> recomment;
 }
