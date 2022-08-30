@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+
+import com.example.intermediate.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +26,11 @@ public class CommentService {
 
   private final TokenProvider tokenProvider;
   private final PostService postService;
-
+  private final LikeRepository likeRepository;
+  @Transactional
+  public int comment_likes(long id) {
+    return likeRepository.countByCommentId(id);
+  }
   @Transactional
   public ResponseDto<?> createComment(CommentRequestDto requestDto, HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {
@@ -46,12 +52,19 @@ public class CommentService {
     if (null == post) {
       return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
     }
+    Comment parent;
+    if (requestDto.getParentId() != null){
+      parent =  commentRepository.findById(requestDto.getParentId()).orElseThrow(
+              () -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+    } else{
+      parent = null;
+    }
 
     Comment comment = Comment.builder()
         .member(member)
         .post(post)
         .content(requestDto.getContent())
-        .parent()
+        .parent(parent)
         .build();
     commentRepository.save(comment);
     return ResponseDto.success(
@@ -59,6 +72,7 @@ public class CommentService {
             .id(comment.getId())
             .author(comment.getMember().getNickname())
             .content(comment.getContent())
+            .likeCount(comment_likes(comment.getId()))
             .createdAt(comment.getCreatedAt())
             .modifiedAt(comment.getModifiedAt())
             .build()
@@ -126,6 +140,7 @@ public class CommentService {
             .id(comment.getId())
             .author(comment.getMember().getNickname())
             .content(comment.getContent())
+            .likeCount(comment_likes(comment.getId()))
             .createdAt(comment.getCreatedAt())
             .modifiedAt(comment.getModifiedAt())
             .build()

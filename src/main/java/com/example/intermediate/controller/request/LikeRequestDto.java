@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentRequestDto {
-  private Long postId;
-  private Long parentId;
-  private String content;
+public class LikeRequestDto {
+    private Long postId;
+    private Long commentId;
+    private Long userId;
 }

@@ -3,11 +3,15 @@ package com.example.intermediate.controller;
 import com.example.intermediate.controller.request.LoginRequestDto;
 import com.example.intermediate.controller.request.MemberRequestDto;
 import com.example.intermediate.controller.response.ResponseDto;
+import com.example.intermediate.domain.UserDetailsImpl;
 import com.example.intermediate.service.MemberService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
+import com.example.intermediate.service.MypageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
   private final MemberService memberService;
+  private final MypageService mypageService;
 
   @RequestMapping(value = "/api/member/signup", method = RequestMethod.POST)
   public ResponseDto<?> signup(@RequestBody @Valid MemberRequestDto requestDto) {
@@ -35,6 +40,12 @@ public class MemberController {
 //  public ResponseDto<?> reissue(HttpServletRequest request, HttpServletResponse response) {
 //    return memberService.reissue(request, response);
 //  }
+
+  @RequestMapping(value = "/api/auth/member/mypage" , method = RequestMethod.GET)
+  public ResponseDto<?> mypage(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    return mypageService.mypage(userDetails);
+
+}
 
   @RequestMapping(value = "/api/auth/member/logout", method = RequestMethod.POST)
   public ResponseDto<?> logout(HttpServletRequest request) {
