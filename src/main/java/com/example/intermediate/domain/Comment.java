@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +42,7 @@ public class Comment extends Timestamped {
   private Comment parent;
 
   // 대댓글의 연관관계//
-  @OneToMany(mappedBy = "parent")
+  @OneToMany(mappedBy = "parent" ,cascade = CascadeType.REMOVE)
   private List<Comment> recomment = new ArrayList<>();
 
   public void update(CommentRequestDto commentRequestDto) {

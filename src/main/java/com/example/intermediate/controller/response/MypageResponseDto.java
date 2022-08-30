@@ -9,8 +9,8 @@ import java.util.List;
 @Builder
 @Getter
 public class MypageResponseDto {
-    private List<Post> postList;
-    private List<Comment> commentList;
+    private List<PostResponseDto> postList;
+    private List<CommentResponseDto> commentList;
     private List<Comment> recommentList;
     private List<Post> likePostList;
     private List<Comment> likeCommentList;
