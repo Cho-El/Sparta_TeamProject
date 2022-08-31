@@ -4,9 +4,9 @@ import com.example.intermediate.domain.Comment;
 import com.example.intermediate.domain.Likes;
 import com.example.intermediate.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+
 import java.util.Optional;
 
 public interface LikeRepository extends JpaRepository<Likes, Long> {
@@ -19,4 +19,5 @@ public interface LikeRepository extends JpaRepository<Likes, Long> {
     //    int countByPostIdAndCommentId(Long post_id, Long comment_id);
     int countByPostId(Long post_id);
     int countByCommentId(Long comment_id);
+
 }
