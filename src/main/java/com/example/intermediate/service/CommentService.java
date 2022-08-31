@@ -95,6 +95,7 @@ public class CommentService {
               .id(comment.getId())
               .author(comment.getMember().getNickname())
               .content(comment.getContent())
+              .likeCount(comment_likes(comment.getId()))
               .createdAt(comment.getCreatedAt())
               .modifiedAt(comment.getModifiedAt())
               .build()
