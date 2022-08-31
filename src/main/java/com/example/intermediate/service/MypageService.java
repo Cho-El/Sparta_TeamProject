@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -34,25 +33,34 @@ public class MypageService {
     public ResponseDto<?> mypage (@AuthenticationPrincipal UserDetailsImpl userDetails){
         Long member_id = userDetails.getMember().getId();
         List<Post> postList = postRepository.findAllByMemberId(member_id);
-        List<Comment> commentList = commentRepository.findAllByMemberIdAndParent(member_id,null);
+        List<Comment> commentList = commentRepository.findAllByMemberId(member_id);
         List<Comment> recommentList = commentRepository.findAllByMemberIdAndParentIsNotNull(member_id);
 
-        List<Post> like_post = likeRepository.findAllByUserIdAndPostId(member_id, null).stream()
-                .map(postId -> postRepository.findById(postId.getPost().getId()).orElseThrow(
-                        () -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다.")))
-                .collect(Collectors.toList());
-        log.info("member_postList : {} " , postList.size());
-        log.info("like_post : {}",like_post.size());
+        List<Post> like_postList = postRepository.findAll();
+        List<Post> like_post = new ArrayList<>();
+        for(int i=0; i<like_postList.size();i++) {
+            Post post = like_postList.get(i);
+            List<Likes> likes = likeRepository.findAllByUserIdAndPostId(member_id,post.getId());
+            if(likes.size() != 0){
+                like_post.add(post);
+            }
+        }
 
-        List<Comment> like_comment = likeRepository.findAllByUserIdAndCommentId(member_id,null).stream()
-                .map(commentId -> commentRepository.findById(commentId.getComment().getId()).orElseThrow(
-                        () -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다.")))
-                .collect(Collectors.toList());
-        log.info("like_comment : {}",like_comment.size());
+
+        List<Comment> like_commentList = commentRepository.findAll();
+        List<Comment> like_comment = new ArrayList<>();
+        for(int i=0; i<like_commentList.size();i++) {
+            Comment comment = like_commentList.get(i);;
+            List<Likes> likes = likeRepository.findAllByUserIdAndCommentId(member_id,comment.getId());
+            if(likes.size() != 0){
+                like_comment.add(comment);
+            }
+        }
+
         List<PostResponseDto> member_postList = new ArrayList<>();
-
-        List<PostResponseDto> member_like_postList = new ArrayList<>();
         List<CommentResponseDto> member_commentList = new ArrayList<>();
+        List<PostResponseDto> member_like_postList = new ArrayList<>();
+        List<CommentResponseDto> member_like_commentList = new ArrayList<>();
 
         for(Post post : postList){
             member_postList.add(
@@ -67,30 +75,44 @@ public class MypageService {
                             .build()
             );
         }
+        for(Post postLike : like_post)
+            member_like_postList.add(
+                    PostResponseDto.builder()
+                            .id(postLike.getId())
+                            .title(postLike.getTitle())
+                            .content(postLike.getContent())
+                            .author(postLike.getMember().getNickname())
+                            .like_count(post_like(postLike.getId()))
+                            .createdAt(postLike.getCreatedAt())
+                            .modifiedAt(postLike.getModifiedAt())
+                            .build()
+            );
 
-//        for(Post postLike : like_post)
-//            member_like_postList.add(
-//                    PostResponseDto.builder()
-//                            .id(postLike.getId())
-//                            .title(postLike.getTitle())
-//                            .content(postLike.getContent())
-//                            .author(postLike.getMember().getNickname())
-//                            .like_count(post_like(postLike.getId()))
-//                            .createdAt(postLike.getCreatedAt())
-//                            .modifiedAt(postLike.getModifiedAt())
-//                            .build()
-//            );
-        for(Comment comment : commentList){
+        for(Comment comment : commentList) {
             member_commentList.add(
                     CommentResponseDto.builder()
-                    .id(comment.getId())
-                    .author(comment.getMember().getNickname())
-                    .content(comment.getContent())
-                    .likeCount(comment_like(comment.getId()))
-                    .createdAt(comment.getCreatedAt())
-                    .modifiedAt(comment.getModifiedAt())
-                    .build()
+                            .id(comment.getId())
+                            .author(comment.getMember().getNickname())
+                            .content(comment.getContent())
+                            .likeCount(comment_like(comment.getId()))
+                            .createdAt(comment.getCreatedAt())
+                            .modifiedAt(comment.getModifiedAt())
+                            .build()
             );
+        }
+
+        for(Comment commentLike : like_comment){
+            member_like_commentList.add(
+                    CommentResponseDto.builder()
+                            .id(commentLike.getId())
+                            .author(commentLike.getMember().getNickname())
+                            .content(commentLike.getContent())
+                            .likeCount(comment_like(commentLike.getId()))
+                            .createdAt(commentLike.getCreatedAt())
+                            .modifiedAt(commentLike.getModifiedAt())
+                            .build()
+            );
+
         }
 
 
@@ -101,7 +123,7 @@ public class MypageService {
                         .commentList(member_commentList)
                         .recommentList(recommentList)
                         .likePostList(member_like_postList)
-//                        .likeCommentList(like_comment)
+                        .likeCommentList(member_like_commentList)
                         .build()
         );
     }
