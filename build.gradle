@@ -37,6 +37,12 @@ dependencies {
 //     validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    // AWS - 성준
+    //implementation group: 'io.awspring.cloud', name: 'spring-cloud-starter-aws', version: '2.4.2'
+//    implementation platform('com.amazonaws:aws-java-sdk-bom:1.12.286')
+//    implementation 'com.amazonaws:aws-java-sdk-s3'
+//    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE' // spring boot와 aws를 연동시키기 위해 추가
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
 }
 
 tasks.named('test') {

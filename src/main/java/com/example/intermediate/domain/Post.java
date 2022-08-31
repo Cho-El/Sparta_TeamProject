@@ -35,6 +35,9 @@ public class Post extends Timestamped {
   private String content;
 
   @Column(nullable = true)
+  private String imgUrl;
+
+  @Column(nullable = true)
   private String filePath;
 
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -47,6 +50,7 @@ public class Post extends Timestamped {
   public void update(PostRequestDto postRequestDto) {
     this.title = postRequestDto.getTitle();
     this.content = postRequestDto.getContent();
+    this.imgUrl = postRequestDto.getImgUrl();
   }
 
   public boolean validateMember(Member member) {
