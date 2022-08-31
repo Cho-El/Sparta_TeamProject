@@ -36,6 +36,8 @@ public class MypageService {
         List<Comment> commentList = commentRepository.findAllByMemberId(member_id);
         List<Comment> recommentList = commentRepository.findAllByMemberIdAndParentIsNotNull(member_id);
 
+
+        // 좋아요한 게시물 가져오기
         List<Post> like_postList = postRepository.findAll();
         List<Post> like_post = new ArrayList<>();
         for(int i=0; i<like_postList.size();i++) {
@@ -46,7 +48,7 @@ public class MypageService {
             }
         }
 
-
+        // 좋아요한 댓글 가져오기
         List<Comment> like_commentList = commentRepository.findAll();
         List<Comment> like_comment = new ArrayList<>();
         for(int i=0; i<like_commentList.size();i++) {
@@ -57,11 +59,13 @@ public class MypageService {
             }
         }
 
+        // 게시물 , 댓글, 좋아요한 게시물, 좋아요한 댓글 넣어둘 ResponseDto
         List<PostResponseDto> member_postList = new ArrayList<>();
         List<CommentResponseDto> member_commentList = new ArrayList<>();
         List<PostResponseDto> member_like_postList = new ArrayList<>();
         List<CommentResponseDto> member_like_commentList = new ArrayList<>();
 
+        // 게시물 빌드
         for(Post post : postList){
             member_postList.add(
                     PostResponseDto.builder()
@@ -75,6 +79,8 @@ public class MypageService {
                             .build()
             );
         }
+
+        // 좋아요한 게시물 빌드
         for(Post postLike : like_post)
             member_like_postList.add(
                     PostResponseDto.builder()
@@ -88,6 +94,7 @@ public class MypageService {
                             .build()
             );
 
+        // 댓글 빌드
         for(Comment comment : commentList) {
             member_commentList.add(
                     CommentResponseDto.builder()
@@ -101,6 +108,7 @@ public class MypageService {
             );
         }
 
+        // 좋아요한 댓글 빌드
         for(Comment commentLike : like_comment){
             member_like_commentList.add(
                     CommentResponseDto.builder()
