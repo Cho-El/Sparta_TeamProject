@@ -11,4 +11,5 @@ public class LikeRequestDto {
     private Long postId;
     private Long commentId;
     private Long userId;
+    private Long reCommentId;
 }

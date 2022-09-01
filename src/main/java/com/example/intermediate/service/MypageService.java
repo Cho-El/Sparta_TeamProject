@@ -34,7 +34,8 @@ public class MypageService {
         Long member_id = userDetails.getMember().getId();
         List<Post> postList = postRepository.findAllByMemberId(member_id);
         List<Comment> commentList = commentRepository.findAllByMemberId(member_id);
-        List<Comment> recommentList = commentRepository.findAllByMemberIdAndParentIsNotNull(member_id);
+//        List<Comment> recommentList = commentRepository.findAllByMemberIdAndParentIsNotNull(member_id);
+        List<Comment> recommentList = commentRepository.findAllByMemberId(member_id);
 
 
         // 좋아요한 게시물 가져오기

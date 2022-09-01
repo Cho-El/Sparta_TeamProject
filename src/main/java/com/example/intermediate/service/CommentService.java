@@ -27,6 +27,7 @@ public class CommentService {
   private final TokenProvider tokenProvider;
   private final PostService postService;
   private final LikeRepository likeRepository;
+
   @Transactional
   public int comment_likes(long id) {
     return likeRepository.countByCommentId(id);

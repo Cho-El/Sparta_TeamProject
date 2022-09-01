@@ -19,24 +19,24 @@ public class ReCommentController {
 
     private final ReCommentService recommentService;
 
-    @RequestMapping(value = "/api/auth/comment", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/auth/recomment", method = RequestMethod.POST)
     public ResponseDto<?> createReComment(@RequestBody ReCommentRequestDto requestDto,
                                         HttpServletRequest request) {
         return recommentService.createReComment(requestDto, request);
     }
 
-    @RequestMapping(value = "/api/comment/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/recomment/{id}", method = RequestMethod.GET)
     public ResponseDto<?> getAllReComments(@PathVariable Long id) {
         return recommentService.getAllReCommentsByComment(id);
     }
 
-    @RequestMapping(value = "/api/auth/comment/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/api/auth/recomment/{id}", method = RequestMethod.PUT)
     public ResponseDto<?> updateReComment(@PathVariable Long id, @RequestBody ReCommentRequestDto requestDto,
                                         HttpServletRequest request) {
         return recommentService.updateReComment(id, requestDto, request);
     }
 
-    @RequestMapping(value = "/api/auth/comment/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/api/auth/recomment/{id}", method = RequestMethod.DELETE)
     public ResponseDto<?> deleteReComment(@PathVariable Long id,
                                         HttpServletRequest request) {
         return recommentService.deleteReComment(id, request);

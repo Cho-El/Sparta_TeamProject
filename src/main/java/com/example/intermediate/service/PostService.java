@@ -33,15 +33,18 @@ public class PostService {
   private final LikeRepository likeRepository;
   private final TokenProvider tokenProvider;
 
+
   @Transactional
   public int post_likes(long id) {
     return likeRepository.countByPostId(id);
   }
   @Transactional
-  public int comment_likes(long id) {
+  public int comment_likes(long id) { // 추가 이유
     return likeRepository.countByCommentId(id);
   }
-
+  public int reComment_likes(long id) {
+    return likeRepository.countByReCommentId(id);
+  }
   @Transactional
   public ResponseDto<?> createPost(PostRequestDto requestDto, HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {
@@ -98,7 +101,7 @@ public class PostService {
                         .id(reComment.getId())
                         .author(reComment.getMember().getNickname())
                         .content(reComment.getContent())
-                        .likeCount(comment_likes(reComment.getId()))
+                        .likeCount(reComment_likes(reComment.getId()))
                         .createdAt(reComment.getCreatedAt())
                         .modifiedAt(reComment.getModifiedAt())
                         .build()

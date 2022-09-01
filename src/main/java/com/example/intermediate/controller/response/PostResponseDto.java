@@ -24,5 +24,4 @@ public class PostResponseDto {
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
 
-
 }

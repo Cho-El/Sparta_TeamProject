@@ -39,7 +39,7 @@ public class Comment extends Timestamped {
 
   // 대댓글의 연관관계//
   @OneToMany(mappedBy = "comment" ,cascade = CascadeType.REMOVE)
-  private List<Comment> recomment = new ArrayList<>();
+  private List<ReComment> recomment = new ArrayList<>();
 
   public void update(CommentRequestDto commentRequestDto) {
     this.content = commentRequestDto.getContent();

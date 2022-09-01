@@ -32,8 +32,8 @@ public class ReCommentService {
     private final CommentService commentService;
     private final LikeRepository likeRepository;
     @Transactional
-    public int comment_likes(long id) {
-        return likeRepository.countByCommentId(id);
+    public int reComment_likes(long id) {
+        return likeRepository.countByReCommentId(id);
     }
 
     @Transactional
@@ -75,7 +75,7 @@ public class ReCommentService {
                         .id(recomment.getId())
                         .author(recomment.getMember().getNickname())
                         .content(recomment.getContent())
-                        .likeCount(comment_likes(comment.getId()))
+                        .likeCount(reComment_likes(recomment.getId()))
                         .createdAt(recomment.getCreatedAt())
                         .modifiedAt(recomment.getModifiedAt())
                         .build()
@@ -98,7 +98,7 @@ public class ReCommentService {
                             .id(reComment.getId())
                             .author(reComment.getMember().getNickname())
                             .content(reComment.getContent())
-                            .likeCount(comment_likes(reComment.getId()))
+                            .likeCount(reComment_likes(reComment.getId()))
                             .createdAt(reComment.getCreatedAt())
                             .modifiedAt(reComment.getModifiedAt())
                             .build()
@@ -144,7 +144,7 @@ public class ReCommentService {
                         .id(reComment.getId())
                         .author(reComment.getMember().getNickname())
                         .content(reComment.getContent())
-                        .likeCount(comment_likes(reComment.getId()))
+                        .likeCount(reComment_likes(reComment.getId()))
                         .createdAt(reComment.getCreatedAt())
                         .modifiedAt(reComment.getModifiedAt())
                         .build()
