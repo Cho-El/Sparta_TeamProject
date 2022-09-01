@@ -13,6 +13,8 @@ import com.example.intermediate.jwt.TokenProvider;
 import com.example.intermediate.repository.CommentRepository;
 import com.example.intermediate.repository.LikeRepository;
 import com.example.intermediate.repository.PostRepository;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +24,14 @@ import com.example.intermediate.repository.ReCommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
   private final PostRepository postRepository;
+  private final S3UploaderService s3UploaderService;
   private final CommentRepository commentRepository;
   private final ReCommentRepository reCommentRepository;
   private final LikeRepository likeRepository;
@@ -46,7 +50,7 @@ public class PostService {
     return likeRepository.countByReCommentId(id);
   }
   @Transactional
-  public ResponseDto<?> createPost(PostRequestDto requestDto, HttpServletRequest request) {
+  public ResponseDto<?> createPost(PostRequestDto requestDto, MultipartFile multipartFile, HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {
       return ResponseDto.fail("MEMBER_NOT_FOUND",
           "로그인이 필요합니다.");
@@ -62,9 +66,20 @@ public class PostService {
       return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
     }
 
+    String FileName = null;
+    if (!multipartFile.isEmpty()) {
+      try {
+        FileName = s3UploaderService.uploadFiles(multipartFile, "image");
+        System.out.println(FileName);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     Post post = Post.builder()
         .title(requestDto.getTitle())
         .content(requestDto.getContent())
+        .imgUrl(FileName)
         .member(member)
         .build();
     postRepository.save(post);
@@ -75,6 +90,7 @@ public class PostService {
             .content(post.getContent())
             .author(post.getMember().getNickname())
             .like_count(post_likes(post.getId()))
+            .imgUrl(FileName)
             .createdAt(post.getCreatedAt())
             .modifiedAt(post.getModifiedAt())
             .build()
@@ -140,7 +156,7 @@ public class PostService {
   }
 
   @Transactional
-  public ResponseDto<Post> updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request) {
+  public ResponseDto<Post> updatePost(Long id, PostRequestDto requestDto, MultipartFile multipartFile, HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {
       return ResponseDto.fail("MEMBER_NOT_FOUND",
           "로그인이 필요합니다.");

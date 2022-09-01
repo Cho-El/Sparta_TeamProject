@@ -5,11 +5,8 @@ import com.example.intermediate.controller.response.ResponseDto;
 import com.example.intermediate.service.PostService;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,9 +15,9 @@ public class PostController {
   private final PostService postService;
 
   @RequestMapping(value = "/api/auth/post", method = RequestMethod.POST)
-  public ResponseDto<?> createPost(@RequestBody PostRequestDto requestDto,
+  public ResponseDto<?> createPost(@RequestPart PostRequestDto requestDto, @RequestPart(required = false) MultipartFile multipartFile,
       HttpServletRequest request) {
-    return postService.createPost(requestDto, request);
+    return postService.createPost(requestDto, multipartFile, request);
   }
 
   @RequestMapping(value = "/api/post/{id}", method = RequestMethod.GET)
@@ -34,9 +31,9 @@ public class PostController {
   }
 
   @RequestMapping(value = "/api/auth/post/{id}", method = RequestMethod.PUT)
-  public ResponseDto<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto,
+  public ResponseDto<?> updatePost(@PathVariable Long id, @RequestPart PostRequestDto requestDto, @RequestPart(required = false) MultipartFile multipartFile,
       HttpServletRequest request) {
-    return postService.updatePost(id, postRequestDto, request);
+    return postService.updatePost(id, requestDto, multipartFile, request);
   }
 
   @RequestMapping(value = "/api/auth/post/{id}", method = RequestMethod.DELETE)
