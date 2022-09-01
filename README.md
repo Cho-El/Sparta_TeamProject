@@ -1,3 +1,14 @@
-# ERD
-![image](https://user-images.githubusercontent.com/66781422/187814128-90bc6ab0-943e-47f3-9802-f7feac51f71e.png)
+# Sparta_TeamProject
 
+# default main1
+
+# 성윤님 개발 다 끝남
+# 진우님 개발 중
+
+# 개발을 하다가 오류가 해결
+# main1 + 진우님의 개발 내용
+
+# ㄹ더랴더ㅑㄹㄷ
+
+# 성준
+# 개발 끝
