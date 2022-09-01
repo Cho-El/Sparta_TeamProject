@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.example.intermediate.controller.response.CommentResponseDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,8 +42,8 @@ public class Post extends Timestamped {
   @Column(nullable = true)
   private String imgUrl;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-
   private List<Comment> comments;
 
   @JoinColumn(name = "member_id", nullable = false)
