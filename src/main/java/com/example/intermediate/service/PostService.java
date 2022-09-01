@@ -172,6 +172,16 @@ public class PostService {
       return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
     }
 
+    String FileName = null;
+    if (!multipartFile.isEmpty()) {
+      try {
+        FileName = s3UploaderService.uploadFiles(multipartFile, "image");
+        System.out.println(FileName);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     Post post = isPresentPost(id);
     if (null == post) {
       return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
@@ -180,7 +190,7 @@ public class PostService {
     if (post.validateMember(member)) {
       return ResponseDto.fail("BAD_REQUEST", "작성자만 수정할 수 있습니다.");
     }
-
+    requestDto.setImgUrl(FileName);
     post.update(requestDto);
     return ResponseDto.success(post);
   }
