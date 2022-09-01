@@ -37,13 +37,9 @@ public class Comment extends Timestamped {
   @Column(nullable = false)
   private String content;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "parent_id")
-  private Comment parent;
-
   // 대댓글의 연관관계//
-  @OneToMany(mappedBy = "parent" ,cascade = CascadeType.REMOVE)
-  private List<Comment> recomment = new ArrayList<>();
+  @OneToMany(mappedBy = "comment" ,cascade = CascadeType.REMOVE)
+  private List<ReComment> recomment = new ArrayList<>();
 
   public void update(CommentRequestDto commentRequestDto) {
     this.content = commentRequestDto.getContent();

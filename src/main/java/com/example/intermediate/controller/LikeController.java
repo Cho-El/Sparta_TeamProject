@@ -38,4 +38,15 @@ public class LikeController {
     public ResponseDto<?> cancelCommentLike(@RequestBody @Valid LikeRequestDto requestDto, HttpServletRequest request) {
         return likeService.cancelCommentLike(requestDto,request);
     }
+
+    // 대댓글 좋아요 등록
+    @PostMapping("/recomment")
+    public ResponseDto<?> enrollReCommentLike(@RequestBody @Valid LikeRequestDto requestDto, HttpServletRequest request) {
+        return likeService.enrollReCommentLike(requestDto, request);
+    }
+    // 댓글 좋아요 취소
+    @DeleteMapping("/recomment")
+    public ResponseDto<?> cancelReCommentLike(@RequestBody @Valid LikeRequestDto requestDto, HttpServletRequest request) {
+        return likeService.cancelReCommentLike(requestDto,request);
+    }
 }

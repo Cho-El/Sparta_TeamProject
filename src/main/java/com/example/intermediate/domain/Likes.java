@@ -34,6 +34,12 @@ public class Likes {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference
+    @JoinColumn(name = "recomment_id")
+    private ReComment reComment;
+
     public Likes(Long userId, Post post) { // 게시물 좋아요
         this.userId = userId;
         this.post = post;
@@ -42,5 +48,10 @@ public class Likes {
     public Likes(Long userId, Comment comment) { // 댓글 좋아요
         this.userId = userId;
         this.comment = comment;
+    }
+
+    public Likes(Long userId, ReComment reComment) { // 대댓글 좋아요
+        this.userId = userId;
+        this.reComment = reComment;
     }
 }
