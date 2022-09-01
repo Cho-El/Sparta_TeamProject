@@ -119,7 +119,7 @@ public class PostService {
   }
 
   @Transactional
-  public ResponseDto<Post> updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request) {
+  public ResponseDto<Post> updatePost(Long id, PostRequestDto requestDto, MultipartFile multipartFile, HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {
       return ResponseDto.fail("MEMBER_NOT_FOUND",
           "로그인이 필요합니다.");

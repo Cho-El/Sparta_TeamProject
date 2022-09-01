@@ -31,9 +31,9 @@ public class PostController {
   }
 
   @RequestMapping(value = "/api/auth/post/{id}", method = RequestMethod.PUT)
-  public ResponseDto<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto,
+  public ResponseDto<?> updatePost(@PathVariable Long id, @RequestPart PostRequestDto requestDto, @RequestPart(required = false) MultipartFile multipartFile,
       HttpServletRequest request) {
-    return postService.updatePost(id, postRequestDto, request);
+    return postService.updatePost(id, requestDto, multipartFile, request);
   }
 
   @RequestMapping(value = "/api/auth/post/{id}", method = RequestMethod.DELETE)
