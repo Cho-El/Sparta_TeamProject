@@ -44,8 +44,7 @@ public class Post extends Timestamped {
   @Column(nullable = true)
   private String filePath;
 
-  @JoinColumn(name="post_id")
-  @OneToMany(fetch =  FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
   private List<Comment> comments;
 
   @JoinColumn(name = "member_id", nullable = false)

@@ -25,7 +25,7 @@ public class Scheduler {
 
             if(post.getComments().size() == 0) {
                 postRepository.deleteById(post.getId());
-                log.info("게시물 <{}>이 삭제되었습니다.", post.getTitle());
+                log.info("게시물 <{}>이(가) 삭제되었습니다.", post.getTitle());
             }
         }
         log.info("댓글이 없는 게시물 삭제 스케줄러 종료.");

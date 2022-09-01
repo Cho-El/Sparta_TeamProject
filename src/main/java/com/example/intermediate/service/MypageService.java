@@ -1,22 +1,18 @@
 package com.example.intermediate.service;
 
 
-import com.example.intermediate.controller.response.CommentResponseDto;
-import com.example.intermediate.controller.response.MypageResponseDto;
-import com.example.intermediate.controller.response.PostResponseDto;
-import com.example.intermediate.controller.response.ResponseDto;
-import com.example.intermediate.domain.Comment;
-import com.example.intermediate.domain.Likes;
-import com.example.intermediate.domain.Post;
-import com.example.intermediate.domain.UserDetailsImpl;
+import com.example.intermediate.controller.response.*;
+import com.example.intermediate.domain.*;
 import com.example.intermediate.repository.CommentRepository;
 import com.example.intermediate.repository.LikeRepository;
 import com.example.intermediate.repository.PostRepository;
+import com.example.intermediate.repository.ReCommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 @Slf4j
@@ -26,15 +22,17 @@ public class MypageService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
+    private final ReCommentRepository reCommentRepository;
 
 
+    public int recomment_like(long id) { return likeRepository.countByReCommentId(id);}
     public int comment_like(long id) { return likeRepository.countByCommentId(id); }
     public int post_like(long id) { return likeRepository.countByPostId(id); }
     public ResponseDto<?> mypage (@AuthenticationPrincipal UserDetailsImpl userDetails){
         Long member_id = userDetails.getMember().getId();
         List<Post> postList = postRepository.findAllByMemberId(member_id);
         List<Comment> commentList = commentRepository.findAllByMemberId(member_id);
-        List<Comment> recommentList = commentRepository.findAllByMemberId(member_id);
+        List<ReComment> recommentList = reCommentRepository.findAllByMemberId(member_id);
 
 
 
@@ -63,6 +61,7 @@ public class MypageService {
         // 게시물 , 댓글, 좋아요한 게시물, 좋아요한 댓글 넣어둘 ResponseDto
         List<PostResponseDto> member_postList = new ArrayList<>();
         List<CommentResponseDto> member_commentList = new ArrayList<>();
+        List<ReCommentResponseDto> member_recommentList = new ArrayList<>();
         List<PostResponseDto> member_like_postList = new ArrayList<>();
         List<CommentResponseDto> member_like_commentList = new ArrayList<>();
 
@@ -108,6 +107,20 @@ public class MypageService {
                             .build()
             );
         }
+
+        // 대댓글 빌드
+        for(ReComment recomment : recommentList){
+            member_recommentList.add(
+                    ReCommentResponseDto.builder()
+                            .id(recomment.getId())
+                            .author(recomment.getMember().getNickname())
+                            .content(recomment.getContent())
+                            .createdAt(recomment.getCreatedAt())
+                            .modifiedAt(recomment.getModifiedAt())
+                            .likeCount(recomment_like(recomment.getId()))
+                            .build()
+            );
+        }
         // 좋아요한 댓글 빌드
         for(Comment commentLike : like_comment){
             member_like_commentList.add(
@@ -129,7 +142,7 @@ public class MypageService {
                 MypageResponseDto.builder()
                         .postList(member_postList)
                         .commentList(member_commentList)
-                        .recommentList(recommentList)
+                        .recommentList(member_recommentList)
                         .likePostList(member_like_postList)
                         .likeCommentList(member_like_commentList)
                         .build()
