@@ -19,5 +19,5 @@ public class CommentResponseDto {
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
   private int likeCount;
-  private List<CommentResponseDto> recomment;
+  private List<ReCommentResponseDto> reCommentResponseDtoList;
 }

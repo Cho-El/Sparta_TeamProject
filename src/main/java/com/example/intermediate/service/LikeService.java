@@ -5,6 +5,7 @@ import com.example.intermediate.controller.response.ResponseDto;
 import com.example.intermediate.domain.Comment;
 import com.example.intermediate.domain.Likes;
 import com.example.intermediate.domain.Post;
+import com.example.intermediate.domain.ReComment;
 import com.example.intermediate.jwt.TokenProvider;
 import com.example.intermediate.repository.CommentRepository;
 import com.example.intermediate.repository.LikeRepository;
@@ -22,6 +23,7 @@ public class LikeService {
     private final CommentRepository commentRepository;
     private final PostService postService;
     private final CommentService commentService;
+    private final ReCommentService reCommentService;
     private final TokenProvider tokenProvider;
 
     // 게시글 좋아요 등록 -> 게시글, 댓글, 대댓글 response에 좋아요 개수 함께 나마타내기
@@ -86,7 +88,7 @@ public class LikeService {
             return ResponseDto.fail("NOT_FOUND", "존재하지 않는 댓글 id 입니다.");
         }
 
-        // like repo에 유저의 게시글 좋아요 기록이 없는 경우
+        // like repo에 유저의 댓글 좋아요 기록이 없는 경우
         if (likeRepository.findByUserIdAndComment(requestDto.getUserId(),comment).isEmpty()){
             likeRepository.save(new Likes(requestDto.getUserId(),comment));
             return ResponseDto.success("Enroll comment like success");
@@ -108,9 +110,59 @@ public class LikeService {
         if (null == comment) {
             return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
         }
-        // like repo에 유저의 게시글 좋아요 기록이 있는 경우
+        // like repo에 유저의 댓글 좋아요 기록이 있는 경우
         if (!likeRepository.findByUserIdAndComment(requestDto.getUserId(),comment).isEmpty()){
             likeRepository.delete(new Likes(requestDto.getUserId(),comment));
+            return ResponseDto.success("Cancel likes success");
+        }
+        return ResponseDto.success("Not enroll");
+    }
+
+    // 대댓글 좋아요 등록
+    public ResponseDto<?> enrollReCommentLike(LikeRequestDto requestDto, HttpServletRequest request) {
+        if (null == request.getHeader("Refresh-Token")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        if (null == request.getHeader("Authorization")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        ReComment reComment = reCommentService.isPresentReComment(requestDto.getReCommentId());
+        if (null == reComment) {
+            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 대댓글 id 입니다.");
+        }
+
+        // like repo에 유저의 대댓글 좋아요 기록이 없는 경우
+        if (likeRepository.findByUserIdAndReComment(requestDto.getUserId(),reComment).isEmpty()){
+            likeRepository.save(new Likes(requestDto.getUserId(),reComment));
+            return ResponseDto.success("Enroll comment like success");
+        }
+        return ResponseDto.success("Already Exists");
+
+    }
+
+    // 대댓글 좋아요 취소
+    public ResponseDto<?> cancelReCommentLike(LikeRequestDto requestDto, HttpServletRequest request) {
+        if (null == request.getHeader("Refresh-Token")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        if (null == request.getHeader("Authorization")) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "로그인이 필요합니다.");
+        }
+
+        ReComment reComment = reCommentService.isPresentReComment(requestDto.getReCommentId());
+        if (null == reComment) {
+            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 대댓글 id 입니다.");
+        }
+        // like repo에 유저의 댓글 좋아요 기록이 있는 경우
+        if (!likeRepository.findByUserIdAndReComment(requestDto.getUserId(),reComment).isEmpty()){
+            likeRepository.delete(new Likes(requestDto.getUserId(),reComment));
             return ResponseDto.success("Cancel likes success");
         }
         return ResponseDto.success("Not enroll");
