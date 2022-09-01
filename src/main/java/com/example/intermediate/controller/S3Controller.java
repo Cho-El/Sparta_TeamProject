@@ -9,11 +9,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 public class S3Controller {
     private final S3UploaderService s3UploaderService;
+
+//    List<MultipartFile> files;
 
     @PostMapping("/api/auth/image")
     public ResponseDto<?> imageUpload(@RequestParam("image") MultipartFile multipartFile){

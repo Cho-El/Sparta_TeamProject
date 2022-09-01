@@ -37,9 +37,6 @@ public class Post extends Timestamped {
   @Column(nullable = true)
   private String imgUrl;
 
-  @Column(nullable = true)
-  private String filePath;
-
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments;
 
