@@ -49,8 +49,7 @@ public class TokenProvider {
   private final RefreshTokenRepository refreshTokenRepository;
 //  private final UserDetailsServiceImpl userDetailsService;
 
-  public TokenProvider(@Value("${jwt.secret}") String secretKey,
-      RefreshTokenRepository refreshTokenRepository) {
+  public TokenProvider(@Value("${jwt.secret}") String secretKey, RefreshTokenRepository refreshTokenRepository) {
     this.refreshTokenRepository = refreshTokenRepository;
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -59,6 +58,7 @@ public class TokenProvider {
   public TokenDto generateTokenDto(Member member) {
     long now = (new Date().getTime());
 
+    // access_token 생성
     Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
     String accessToken = Jwts.builder()
         .setSubject(member.getNickname())
@@ -66,7 +66,7 @@ public class TokenProvider {
         .setExpiration(accessTokenExpiresIn)
         .signWith(key, SignatureAlgorithm.HS256) // key
         .compact();
-
+    // refreshtoken 생성
     String refreshToken = Jwts.builder()
         .setExpiration(new Date(now + REFRESH_TOKEN_EXPRIRE_TIME))
         .signWith(key, SignatureAlgorithm.HS256)
@@ -114,7 +114,7 @@ public class TokenProvider {
     return ((UserDetailsImpl) authentication.getPrincipal()).getMember();
   }
 
-  public boolean validateToken(String token) {
+  public boolean validateToken(String token) { // 토큰 유효성 검사
     try {
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
       return true;

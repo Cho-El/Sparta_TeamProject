@@ -74,7 +74,7 @@ public class MemberService {
 //    Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
     TokenDto tokenDto = tokenProvider.generateTokenDto(member);
-    tokenToHeaders(tokenDto, response);
+    tokenToHeaders(tokenDto, response); // response 헤더에 토큰 넣기
 
     return ResponseDto.success(
         MemberResponseDto.builder()

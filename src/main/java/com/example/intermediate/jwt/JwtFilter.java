@@ -44,12 +44,13 @@ public class JwtFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws IOException, ServletException {
 
+    // 암호화 알고리즘
     byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
     Key key = Keys.hmacShaKeyFor(keyBytes);
 
-    String jwt = resolveToken(request);
+    String jwt = resolveToken(request); // bearer 떼기
 
-    if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+    if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) { // jwt가 안비어있고 token이 유효할때 -> 토큰 까보고 검증
       Claims claims;
       try {
         claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
@@ -67,6 +68,7 @@ public class JwtFilter extends OncePerRequestFilter {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       }
 
+      // 권한 부여
       String subject = claims.getSubject();
       Collection<? extends GrantedAuthority> authorities =
           Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
@@ -81,7 +83,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     filterChain.doFilter(request, response);
   }
-  private String resolveToken(HttpServletRequest request) {
+  
+  private String resolveToken(HttpServletRequest request) { // bearer 떼내기
     String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
     if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
       return bearerToken.substring(7);
